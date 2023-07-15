@@ -6,6 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
+    path: Assets/Circus/Scenes/Title.unity
+    guid: 8b98aa07f24bee7498926a9050401227
+  - enabled: 1
+    path: Assets/Circus/Scenes/Stage01.unity
+    guid: 9e54190a0d2761644b325ce67067b411
+  - enabled: 1
+    path: Assets/Circus/Scenes/Stage02.unity
+    guid: 4586637a8ee679949a7da67fb17322ac
+  - enabled: 1
+    path: Assets/Circus/Scenes/Stage03.unity
+    guid: 5c249f32283051f4abcf0a02199c416f
   m_configObjects: {}
