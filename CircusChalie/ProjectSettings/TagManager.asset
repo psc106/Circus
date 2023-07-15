@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Head
+  - Score
+  - Trap
+  - Gold
+  - End
+  - Floor
+  - Wall
   layers:
   - Default
   - TransparentFX
@@ -40,4 +47,22 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: background
+    uniqueID: 3378610971
+    locked: 0
+  - name: middlegroundBack
+    uniqueID: 15196227
+    locked: 0
+  - name: middleground
+    uniqueID: 3504369221
+    locked: 0
+  - name: middlegroundFront
+    uniqueID: 1824816743
+    locked: 0
+  - name: foreground
+    uniqueID: 470763533
+    locked: 0
+  - name: ui
+    uniqueID: 1919996547
     locked: 0

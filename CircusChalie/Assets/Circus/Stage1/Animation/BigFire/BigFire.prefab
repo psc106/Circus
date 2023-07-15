@@ -62,6 +62,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isGold: 0
+  isPot: 0
+  isMonkey: 0
   isTouched: 0
   score: 100
 --- !u!1 &7648363688724889253
@@ -135,7 +137,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1400678147
+  m_SortingLayerID: 15196227
   m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 1757679811, guid: 06b75e808eba1ca47b9d1a5fbffc8ed4, type: 3}
@@ -241,7 +243,7 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 297137763
+  m_SortingLayerID: 1824816743
   m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 1906704987, guid: 06b75e808eba1ca47b9d1a5fbffc8ed4, type: 3}
@@ -342,6 +344,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 814eee32960026f44a9792145e3fa297, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isActive: 0
 --- !u!114 &7648363690574739947
 MonoBehaviour:
   m_ObjectHideFlags: 0
