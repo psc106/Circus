@@ -190,7 +190,7 @@ public class PlayerSt2 : MonoBehaviour
                     scoreCount += 1;
                     tmpScore += 500;
 
-                    Destroy(tmp.gameObject);
+                    tmp.DieToPress();
                 }
             }
         }
