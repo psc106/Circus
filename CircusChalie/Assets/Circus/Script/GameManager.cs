@@ -48,6 +48,7 @@ public class GameManager : MonoBehaviour
         else
         {
             GlobalFunction.Log("게임 매니저 2개 생겨서 종료");
+            instance.sceneUI = sceneUI;
             Destroy(gameObject);
         }
 
@@ -176,6 +177,7 @@ public class GameManager : MonoBehaviour
         bonus = 5000;
         score += 10000;
         stage += 1;
+        savePoint = 0;
         sceneUI = null;
         isStageClear = false;
         SceneManager.LoadScene($"Stage{stage:D2}");
@@ -214,7 +216,7 @@ public class GameManager : MonoBehaviour
         PlayLoading(2);
         yield return new WaitForSeconds(.5f);
         
-        /*life -= 1;
+        life -= 1;
         sceneUI.Lifes[life].enabled = false;
         
         Animator tmp = player.GetComponent<Animator>();
@@ -229,6 +231,6 @@ public class GameManager : MonoBehaviour
         
         bonus = 5000;
         isLoading = false;
-        sceneUI.gameoverUI.SetActive(false);*/
+        sceneUI.gameoverUI.SetActive(false);
     }
 }

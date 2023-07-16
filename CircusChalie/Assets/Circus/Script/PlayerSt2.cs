@@ -125,7 +125,7 @@ public class PlayerSt2 : MonoBehaviour
         if (GameManager.instance.life == 0)
         {
 
-           // GameManager.instance.OnPlayerDead();
+            GameManager.instance.OnPlayerDead();
         }
         else
         {
