@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviour
     public bool isGameover = default;
     public bool isStageClear = default;
     public bool isLoading = default;
+    public bool isJoystickActivate = default;
 
     public UI sceneUI = default;
     public int life;
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
 
             audioSource = GetComponent<AudioSource>();
 
+            isJoystickActivate = false;
             score = 0;
             record = 20000;
             bonus = 5000;
@@ -122,6 +124,8 @@ public class GameManager : MonoBehaviour
 
     public void OnPlayerDead()
     {
+        sceneUI.inputUI.SetActive(false);
+
         sceneUI.audioSource.Stop();
         audioSource.PlayOneShot(mistake);
 
@@ -131,6 +135,8 @@ public class GameManager : MonoBehaviour
 
     public void OnStagedClear()
     {
+        sceneUI.inputUI.SetActive(false);
+
         sceneUI.audioSource.Stop();
         audioSource.PlayOneShot(complete);
 
@@ -145,6 +151,8 @@ public class GameManager : MonoBehaviour
 
     public void OnStagedFail(Player player)
     {
+        sceneUI.inputUI.SetActive(false);
+
         sceneUI.audioSource.Stop();
         audioSource.PlayOneShot(mistake);
 
@@ -153,6 +161,8 @@ public class GameManager : MonoBehaviour
 
     public void OnStaged2Fail(PlayerSt2 playerSt2)
     {
+        sceneUI.inputUI.SetActive(false);
+
         sceneUI.audioSource.Stop();
         audioSource.PlayOneShot(mistake);
 
@@ -237,6 +247,7 @@ public class GameManager : MonoBehaviour
         isLoading = false;
         sceneUI.gameoverUI.SetActive(false);
         sceneUI.audioSource.Play();
+        sceneUI.inputUI.SetActive(true);
     }
 
     IEnumerator PlayStage2Restart(PlayerSt2 player)
@@ -264,5 +275,6 @@ public class GameManager : MonoBehaviour
         isLoading = false;
         sceneUI.gameoverUI.SetActive(false);
         sceneUI.audioSource.Play();
+        sceneUI.inputUI.SetActive(true);
     }
 }

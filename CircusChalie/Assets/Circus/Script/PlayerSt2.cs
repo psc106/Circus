@@ -28,6 +28,9 @@ public class PlayerSt2 : MonoBehaviour
     public AudioClip audioClear;
     public AudioClip audioHead;
 
+    public FloatingJoystick joystick;
+    public Button button;
+
 
     // Start is called before the first frame update
     void Start()
@@ -46,6 +49,17 @@ public class PlayerSt2 : MonoBehaviour
     {
         if (isLive)
         {
+            if (!isJump)
+            {
+                Vector3 velocity = new Vector3(0f, 0f, 0f);
+                rb.velocity = velocity;
+
+                if (Input.GetAxis("Horizontal") == 0 && joystick.Horizontal == 0)
+                {
+                    animator.SetBool("Move", false);
+                    animator.SetBool("BackMove", false);
+                }
+            }
             if (Input.GetKeyDown(KeyCode.Z) && !isJump && !isInvicible)
             {
                 scoreCount = 0;
@@ -69,53 +83,100 @@ public class PlayerSt2 : MonoBehaviour
                 }
             }
 
-            if (!isJump && !isInvicible)
+            if (!GameManager.instance.isJoystickActivate)
             {
-                float x = Input.GetAxis("Horizontal");
-
-                if (x > 0)
+                if (!isJump && !isInvicible)
                 {
-                    float xSpeed = x * speed;
+                    float x = Input.GetAxis("Horizontal");
 
-                    Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+                    if (x > 0)
+                    {
+                        float xSpeed = x * speed;
 
-                    rb.velocity = velocity;
-                    direction = 1;
+                        Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+
+                        rb.velocity = velocity;
+                        direction = 1;
+                    }
+                    else if (x < 0)
+                    {
+                        float xSpeed = x * speed * 0.7f;
+
+                        Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+
+                        rb.velocity = velocity;
+                        direction = -1;
+                    }
+                    else
+                    {
+                        direction = 0;
+                    }
+
                 }
-                else if (x < 0)
+                if (!isInvicible)
                 {
-                    float xSpeed = x * speed *0.7f;
-
-                    Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
-
-                    rb.velocity = velocity;
-                    direction = -1;
+                    if (Input.GetKey(KeyCode.RightArrow))
+                    {
+                        animator.SetBool("BackMove", false);
+                        animator.SetBool("Move", true);
+                    }
+                    if (Input.GetKey(KeyCode.LeftArrow))
+                    {
+                        animator.SetBool("Move", false);
+                        animator.SetBool("BackMove", true);
+                    }
+                    if (Input.GetKeyUp(KeyCode.RightArrow))
+                    {
+                        animator.SetBool("Move", false);
+                    }
+                    if (Input.GetKeyUp(KeyCode.LeftArrow))
+                    {
+                        animator.SetBool("BackMove", false);
+                    }
                 }
-                else
-                {
-                    direction = 0;
-                }
-
             }
-            if (!isInvicible)
+            else
             {
-                if (Input.GetKey(KeyCode.RightArrow))
+                float x = joystick.Horizontal;
+                if (!isJump && !isInvicible)
                 {
-                    animator.SetBool("BackMove", false);
-                    animator.SetBool("Move", true);
+
+                    if (x > 0)
+                    {
+                        float xSpeed = x * speed;
+
+                        Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+
+                        rb.velocity = velocity;
+                        direction = 1;
+                    }
+                    else if (x < 0)
+                    {
+                        float xSpeed = x * speed * 0.7f;
+
+                        Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+
+                        rb.velocity = velocity;
+                        direction = -1;
+                    }
+                    else
+                    {
+                        direction = 0;
+                    }
+
                 }
-                if (Input.GetKey(KeyCode.LeftArrow))
+                if (!isInvicible)
                 {
-                    animator.SetBool("Move", false);
-                    animator.SetBool("BackMove", true);
-                }
-                if (Input.GetKeyUp(KeyCode.RightArrow))
-                {
-                    animator.SetBool("Move", false);
-                }
-                if (Input.GetKeyUp(KeyCode.LeftArrow))
-                {
-                    animator.SetBool("BackMove", false);
+                    if (x > 0)
+                    {
+                        animator.SetBool("BackMove", false);
+                        animator.SetBool("Move", true);
+                    }
+                    if (x < 0)
+                    {
+                        animator.SetBool("Move", false);
+                        animator.SetBool("BackMove", true);
+                    }
                 }
             }
         }
@@ -152,6 +213,31 @@ public class PlayerSt2 : MonoBehaviour
         GameManager.instance.OnStagedClear();
     }
 
+    public void Jump()
+    {
+        if (!isJump && !isInvicible)
+        {
+            scoreCount = 0;
+            tmpScore = 0;
+            animator.SetBool("Jump", true);
+            audioSource.PlayOneShot(audioJump);
+
+            isJump = true;
+            rb.velocity = Vector3.zero;
+            if (direction > 0)
+            {
+                rb.AddForce(new Vector2(speed * 40, jumpPower));
+            }
+            else if (direction < 0)
+            {
+                rb.AddForce(new Vector2(-speed * 40, jumpPower));
+            }
+            else
+            {
+                rb.AddForce(new Vector2(0, jumpPower));
+            }
+        }
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Player : MonoBehaviour
@@ -28,6 +29,8 @@ public class Player : MonoBehaviour
     public AudioClip audioTrap;
     public AudioClip audioClear;
 
+    public FloatingJoystick joystick;
+    public Button button;
 
     // Start is called before the first frame update
     void Start()
@@ -46,6 +49,19 @@ public class Player : MonoBehaviour
     {
         if (isLive)
         {
+            if (!isJump)
+            {
+                Vector3 velocity = new Vector3(0f, 0f, 0f);
+                rb.velocity = velocity;
+
+                if (Input.GetAxis("Horizontal")==0 && joystick.Horizontal==0 )
+                {
+                    animator[0].SetBool("Move", false);
+                    animator[1].SetBool("Move", false);
+                    animator[0].SetBool("BackMove", false);
+                    animator[1].SetBool("BackMove", false);
+                }
+            }
             if (Input.GetKeyDown(KeyCode.Z) && !isJump && !isInvicible)
             {
                 goldPot = null;
@@ -71,59 +87,112 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (!isJump && !isInvicible)
+
+            if (!GameManager.instance.isJoystickActivate)
             {
-                float x = Input.GetAxis("Horizontal");
-
-                if (x > 0)
+                if (!isJump && !isInvicible)
                 {
-                    float xSpeed = x * speed;
 
-                    Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+                    float x = Input.GetAxis("Horizontal");
 
-                    rb.velocity = velocity;
-                    direction = 1;
+                    if (x > 0)
+                    {
+                        float xSpeed = x * speed;
+
+                        Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+
+                        rb.velocity = velocity;
+                        direction = 1;
+                    }
+                    else if (x < 0)
+                    {
+                        float xSpeed = x * speed * 0.7f;
+
+                        Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+
+                        rb.velocity = velocity;
+                        direction = -1;
+                    }
+                    else
+                    {
+                        direction = 0;
+                    }
+
                 }
-                else if (x < 0)
+                if (!isInvicible)
                 {
-                    float xSpeed = x * speed *0.7f;
-
-                    Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
-
-                    rb.velocity = velocity;
-                    direction = -1;
+                    if (Input.GetKey(KeyCode.RightArrow))
+                    {
+                        animator[0].SetBool("BackMove", false);
+                        animator[1].SetBool("BackMove", false);
+                        animator[0].SetBool("Move", true);
+                        animator[1].SetBool("Move", true);
+                    }
+                    if (Input.GetKey(KeyCode.LeftArrow))
+                    {
+                        animator[0].SetBool("Move", false);
+                        animator[1].SetBool("Move", false);
+                        animator[0].SetBool("BackMove", true);
+                        animator[1].SetBool("BackMove", true);
+                    }
+                    if (Input.GetKeyUp(KeyCode.RightArrow))
+                    {
+                        animator[0].SetBool("Move", false);
+                        animator[1].SetBool("Move", false);
+                    }
+                    if (Input.GetKeyUp(KeyCode.LeftArrow))
+                    {
+                        animator[0].SetBool("BackMove", false);
+                        animator[1].SetBool("BackMove", false);
+                    }
                 }
-                else
-                {
-                    direction = 0;
-                }
-
             }
-            if (!isInvicible)
+            else
             {
-                if (Input.GetKey(KeyCode.RightArrow))
+                float x = joystick.Horizontal;
+                if (!isJump && !isInvicible)
                 {
-                    animator[0].SetBool("BackMove", false);
-                    animator[1].SetBool("BackMove", false);
-                    animator[0].SetBool("Move", true);
-                    animator[1].SetBool("Move", true);
+
+                    if (x > 0)
+                    {
+                        float xSpeed = x * speed;
+
+                        Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+
+                        rb.velocity = velocity;
+                        direction = 1;
+                    }
+                    else if (x < 0)
+                    {
+                        float xSpeed = x * speed * 0.7f;
+
+                        Vector3 velocity = new Vector3(xSpeed, 0f, 0f);
+
+                        rb.velocity = velocity;
+                        direction = -1;
+                    }
+                    else
+                    {
+                        direction = 0;
+                    }
+
                 }
-                if (Input.GetKey(KeyCode.LeftArrow))
+                if (!isInvicible)
                 {
-                    animator[0].SetBool("Move", false);
-                    animator[1].SetBool("Move", false);
-                    animator[0].SetBool("BackMove", true);
-                    animator[1].SetBool("BackMove", true);
-                }
-                if (Input.GetKeyUp(KeyCode.RightArrow))
-                {
-                    animator[0].SetBool("Move", false);
-                    animator[1].SetBool("Move", false);
-                }
-                if (Input.GetKeyUp(KeyCode.LeftArrow))
-                {
-                    animator[0].SetBool("BackMove", false);
-                    animator[1].SetBool("BackMove", false);
+                    if (x>0)
+                    {
+                        animator[0].SetBool("BackMove", false);
+                        animator[1].SetBool("BackMove", false);
+                        animator[0].SetBool("Move", true);
+                        animator[1].SetBool("Move", true);
+                    }
+                    if (x<0)
+                    {
+                        animator[0].SetBool("Move", false);
+                        animator[1].SetBool("Move", false);
+                        animator[0].SetBool("BackMove", true);
+                        animator[1].SetBool("BackMove", true);
+                    }
                 }
             }
         }
@@ -260,6 +329,33 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void Jump()
+    {
+        if (!isJump && !isInvicible)
+        {
+            goldPot = null;
+            scoreCount = 0;
+            tmpScore = 0;
+            animator[0].SetBool("Jump", true);
+            animator[1].SetBool("Jump", true);
+            audioSource.PlayOneShot(audioJump);
+
+            isJump = true;
+            rb.velocity = Vector3.zero;
+            if (direction > 0)
+            {
+                rb.AddForce(new Vector2(speed * 40, jumpPower));
+            }
+            else if (direction < 0)
+            {
+                rb.AddForce(new Vector2(-speed * 40, jumpPower));
+            }
+            else
+            {
+                rb.AddForce(new Vector2(0, jumpPower));
+            }
+        }
+    }
     IEnumerator Clear(float x)
     {
         int direction = 0 ;
@@ -304,4 +400,5 @@ public class Player : MonoBehaviour
         Win();
 
     }
+
 }

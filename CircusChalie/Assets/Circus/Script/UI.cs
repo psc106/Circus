@@ -16,6 +16,8 @@ public class UI : MonoBehaviour
     public GameObject gameoverUI;
     public TMP_Text endText;
 
+    public GameObject inputUI;
+
     private float bonusDelay = default;
 
     public List<Image> Lifes;
