@@ -55,9 +55,13 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
+        if (sceneUI == null)
+        {
+            sceneUI = FindAnyObjectByType<UI>();
+        }
+
         if ((stage==1 || stage==2) && sceneUI == null)
         {
-            sceneUI =  FindAnyObjectByType<UI>();
             if (life == 3)
             {
                 sceneUI.Lifes[3].enabled = false; 
@@ -119,16 +123,15 @@ public class GameManager : MonoBehaviour
         StartCoroutine(PlayStage1Restart(player));
     }
 
-    public void OnStagedFail(PlayerSt2 player)
+    public void OnStaged2Fail(PlayerSt2 playerSt2)
     {
-        StartCoroutine(PlayStage2Restart(player));
+        StartCoroutine(PlayStage2Restart(playerSt2));
     }
 
 
     public void ReturnTitle()
     {
-        sceneUI = null;
-        Destroy(instance);
+        Destroy(instance.gameObject);
         SceneManager.LoadScene("Title");
     }
 
@@ -211,21 +214,21 @@ public class GameManager : MonoBehaviour
         PlayLoading(2);
         yield return new WaitForSeconds(.5f);
         
-        life -= 1;
+        /*life -= 1;
         sceneUI.Lifes[life].enabled = false;
-
+        
         Animator tmp = player.GetComponent<Animator>();
         tmp.SetTrigger("Start");
-
+        
         player.transform.position = new Vector2(1 + 16 * savePoint, 1f);
         player.GetComponent<Rigidbody2D>().gravityScale = 2;
-
+        
         yield return new WaitForSeconds(.5f);
 
         player.isLive = true;
-
+        
         bonus = 5000;
         isLoading = false;
-        sceneUI.gameoverUI.SetActive(false);
+        sceneUI.gameoverUI.SetActive(false);*/
     }
 }

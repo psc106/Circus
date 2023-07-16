@@ -125,11 +125,11 @@ public class PlayerSt2 : MonoBehaviour
         if (GameManager.instance.life == 0)
         {
 
-            GameManager.instance.OnPlayerDead();
+           // GameManager.instance.OnPlayerDead();
         }
         else
         {
-            GameManager.instance.OnStagedFail(this);
+            GameManager.instance.OnStaged2Fail(this);
         }
     }
 
@@ -159,7 +159,7 @@ public class PlayerSt2 : MonoBehaviour
                 {
                     if (gold.GetComponentInParent<ScrollAndJump>().isJump)
                     {
-                        tmpScore += 500;
+                        GameManager.instance.score += 500;
                     }
                 }
             }
@@ -167,17 +167,21 @@ public class PlayerSt2 : MonoBehaviour
         
         if (isLive && isJump && collision.tag == "Head")
         {
-            RemoveObject tmp = collision.GetComponentInParent<RemoveObject>();
-            if (tmp.isActive)
-            {
-                tmp.isActive = false;
-                rb.velocity = Vector3.zero;
-                rb.AddForce(new Vector2(0, jumpPower / 2));
+            float heightDistance = transform.position.y - collision.transform.position.y;
+            GlobalFunction.Log(heightDistance);
+            if (heightDistance <= 1.2 && heightDistance >= 1.15){
+                RemoveObject tmp = collision.GetComponentInParent<RemoveObject>();
+                if (tmp.isActive)
+                {
+                    tmp.isActive = false;
+                    rb.velocity = Vector3.zero;
+                    rb.AddForce(new Vector2(0, jumpPower / 2));
 
-                scoreCount += 1;
-                tmpScore += 500;
+                    scoreCount += 1;
+                    tmpScore += 500;
 
-                Destroy(tmp.gameObject);
+                    Destroy(tmp.gameObject);
+                }
             }
         }
 
@@ -250,7 +254,7 @@ public class PlayerSt2 : MonoBehaviour
 
         float currX = transform.position.x;
 
-        while (currX == x)
+        while (currX != x)
         {
             if (direction == 1)
             {

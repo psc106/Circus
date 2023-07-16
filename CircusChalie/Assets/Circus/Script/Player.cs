@@ -165,7 +165,7 @@ public class Player : MonoBehaviour
             animator[1].SetBool("Jump", false);
             if (isLive)
             {
-                Die();
+               // Die();
             }
         }
         if (collision.tag == "Gold")
@@ -277,7 +277,7 @@ public class Player : MonoBehaviour
             {
                 currX = x;
             }
-            yield return new WaitForSeconds(.1f);
+            yield return new WaitForSeconds(.05f);
         }
 
         Win();
