@@ -16,16 +16,23 @@ public class Player : MonoBehaviour
     public bool isJump = default;
     public bool isInvicible = default;
 
-    Gold goldPot = default;
-    int scoreCount = 0;
+    private Gold goldPot = default;
+    private int scoreCount = 0;
 
-    Animator[] animator;
-    Rigidbody2D rb;
+    private Animator[] animator;
+    private Rigidbody2D rb;
+    private AudioSource audioSource;
+
+    public AudioClip audioJump;
+    public AudioClip audioScore;
+    public AudioClip audioTrap;
+    public AudioClip audioClear;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponentsInChildren<Animator>();
         isJump = false;
@@ -46,6 +53,7 @@ public class Player : MonoBehaviour
                 tmpScore = 0;
                 animator[0].SetBool("Jump", true);
                 animator[1].SetBool("Jump", true);
+                audioSource.PlayOneShot(audioJump);
 
                 isJump = true;
                 rb.velocity = Vector3.zero;
@@ -165,7 +173,8 @@ public class Player : MonoBehaviour
             animator[1].SetBool("Jump", false);
             if (isLive)
             {
-               // Die();
+                audioSource.PlayOneShot(audioTrap);
+                Die();
             }
         }
         if (collision.tag == "Gold")
@@ -173,6 +182,7 @@ public class Player : MonoBehaviour
             Gold gold = collision.GetComponent<Gold>();
             if (!gold.isTouched)
             {
+                audioSource.PlayOneShot(audioScore);
                 GameManager.instance.AddScore(gold.score);
                 gold.isTouched = true;
                 collision.gameObject.SetActive(false);
@@ -225,6 +235,17 @@ public class Player : MonoBehaviour
 
             if (collision.gameObject.tag == "End" && isJump)
             {
+                audioSource.PlayOneShot(audioClear);
+
+                if (tmpScore > 0)
+                {
+                    if (scoreCount >= 2)
+                    {
+                        tmpScore += 100;
+                    }
+                    GameManager.instance.AddScore(tmpScore);
+                }
+
                 isInvicible = true;
                 animator[0].SetBool("Jump", false);
                 animator[1].SetBool("Jump", false);

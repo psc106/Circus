@@ -16,15 +16,23 @@ public class PlayerSt2 : MonoBehaviour
     public bool isJump = default;
     public bool isInvicible = default;
 
-    int scoreCount = 0;
+    private int scoreCount = 0;
 
-    Animator animator;
-    Rigidbody2D rb;
+    private Animator animator;
+    private Rigidbody2D rb;
+    private AudioSource audioSource;
+
+    public AudioClip audioJump;
+    public AudioClip audioScore;
+    public AudioClip audioTrap;
+    public AudioClip audioClear;
+    public AudioClip audioHead;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         isJump = false;
@@ -43,6 +51,7 @@ public class PlayerSt2 : MonoBehaviour
                 scoreCount = 0;
                 tmpScore = 0;
                 animator.SetBool("Jump", true);
+                audioSource.PlayOneShot(audioJump);
 
                 isJump = true;
                 rb.velocity = Vector3.zero;
@@ -159,7 +168,7 @@ public class PlayerSt2 : MonoBehaviour
                 {
                     if (gold.GetComponentInParent<ScrollAndJump>().isJump)
                     {
-                        GameManager.instance.score += 500;
+                        tmpScore += 500;
                     }
                 }
             }
@@ -173,6 +182,7 @@ public class PlayerSt2 : MonoBehaviour
                 RemoveObject tmp = collision.GetComponentInParent<RemoveObject>();
                 if (tmp.isActive)
                 {
+                    audioSource.PlayOneShot(audioHead);
                     tmp.isActive = false;
                     rb.velocity = Vector3.zero;
                     rb.AddForce(new Vector2(0, jumpPower / 2));
@@ -195,6 +205,7 @@ public class PlayerSt2 : MonoBehaviour
                 animator.SetBool("Jump", false);
                 if (isLive)
                 {
+                    audioSource.PlayOneShot(audioTrap);
                     Die();
                 }
             }
@@ -214,6 +225,11 @@ public class PlayerSt2 : MonoBehaviour
                     {
                         tmpScore += 100;
                     }
+
+                    if (tmpScore > 600)
+                    {
+                        audioSource.PlayOneShot(audioScore);
+                    }
                     GameManager.instance.AddScore(tmpScore);
                 }
 
@@ -225,6 +241,8 @@ public class PlayerSt2 : MonoBehaviour
 
             if (collision.gameObject.tag == "End" && isJump)
             {
+
+                audioSource.PlayOneShot(audioClear);
                 isInvicible = true;
                 animator.SetBool("Jump", false);
 

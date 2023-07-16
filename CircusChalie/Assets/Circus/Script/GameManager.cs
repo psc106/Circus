@@ -27,6 +27,11 @@ public class GameManager : MonoBehaviour
     public UI sceneUI = default;
     public int life;
 
+    AudioSource audioSource;
+    public AudioClip complete;
+    public AudioClip mistake;
+    public AudioClip newRecord;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -34,6 +39,8 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+
+            audioSource = GetComponent<AudioSource>();
 
             score = 0;
             record = 20000;
@@ -61,13 +68,13 @@ public class GameManager : MonoBehaviour
             sceneUI = FindAnyObjectByType<UI>();
         }
 
-        if ((stage==1 || stage==2) && sceneUI == null)
+        if ((stage == 1 || stage == 2) && sceneUI == null)
         {
             if (life == 3)
             {
-                sceneUI.Lifes[3].enabled = false; 
+                sceneUI.Lifes[3].enabled = false;
             }
-            else if(life ==2)
+            else if (life == 2)
             {
                 sceneUI.Lifes[3].enabled = false;
                 sceneUI.Lifes[2].enabled = false;
@@ -92,24 +99,41 @@ public class GameManager : MonoBehaviour
     {
         if (!isGameover)
         {
-            score += newScore;
-            sceneUI.WritScore(score);
-            if (record < score)
+            if (record <= score)
             {
+                score += newScore;
                 record = score;
+                sceneUI.WritScore(score);
                 sceneUI.WriteRecord(record);
+            }
+            else
+            {
+                score += newScore;
+                sceneUI.WritScore(score);
+                if (record < score)
+                {
+                    audioSource.PlayOneShot(newRecord);
+                    record = score;
+                    sceneUI.WriteRecord(record);
+                }
             }
         }
     }
 
     public void OnPlayerDead()
     {
+        sceneUI.audioSource.Stop();
+        audioSource.PlayOneShot(mistake);
+
         isGameover = true;
         StartCoroutine(PlayGameover());
     }
 
     public void OnStagedClear()
     {
+        sceneUI.audioSource.Stop();
+        audioSource.PlayOneShot(complete);
+
         AddScore(bonus);
 
         bonus = 0;
@@ -121,11 +145,17 @@ public class GameManager : MonoBehaviour
 
     public void OnStagedFail(Player player)
     {
+        sceneUI.audioSource.Stop();
+        audioSource.PlayOneShot(mistake);
+
         StartCoroutine(PlayStage1Restart(player));
     }
 
     public void OnStaged2Fail(PlayerSt2 playerSt2)
     {
+        sceneUI.audioSource.Stop();
+        audioSource.PlayOneShot(mistake);
+
         StartCoroutine(PlayStage2Restart(playerSt2));
     }
 
@@ -157,22 +187,22 @@ public class GameManager : MonoBehaviour
 
     IEnumerator PlayGameover()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
 
         PlayLoading(0);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         isGameover = false;
         ReturnTitle();
     }
 
     IEnumerator PlayClear()
     {
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1.5f);
 
         PlayLoading(1);
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
         bonus = 5000;
         score += 10000;
@@ -186,7 +216,7 @@ public class GameManager : MonoBehaviour
     IEnumerator PlayStage1Restart(Player player)
     {
         isLoading = true;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         PlayLoading(2);
         yield return new WaitForSeconds(.5f);
         life -= 1;
@@ -196,41 +226,43 @@ public class GameManager : MonoBehaviour
         tmp[0].SetTrigger("Start");
         tmp[1].SetTrigger("Start");
 
-        player.transform.position = new Vector2(7+16*savePoint, -5.28f);
+        player.transform.position = new Vector2(7 + 16 * savePoint, -5.28f);
         player.GetComponent<Rigidbody2D>().gravityScale = 2;
 
-        yield return new WaitForSeconds(.5f);
+        yield return new WaitForSeconds(1f);
 
         player.isLive = true;
 
         bonus = 5000;
         isLoading = false;
         sceneUI.gameoverUI.SetActive(false);
+        sceneUI.audioSource.Play();
     }
 
     IEnumerator PlayStage2Restart(PlayerSt2 player)
     {
         isLoading = true;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
 
         PlayLoading(2);
         yield return new WaitForSeconds(.5f);
-        
+
         life -= 1;
         sceneUI.Lifes[life].enabled = false;
-        
+
         Animator tmp = player.GetComponent<Animator>();
         tmp.SetTrigger("Start");
-        
+
         player.transform.position = new Vector2(1 + 16 * savePoint, 1f);
         player.GetComponent<Rigidbody2D>().gravityScale = 2;
-        
-        yield return new WaitForSeconds(.5f);
+
+        yield return new WaitForSeconds(1f);
 
         player.isLive = true;
-        
+
         bonus = 5000;
         isLoading = false;
         sceneUI.gameoverUI.SetActive(false);
+        sceneUI.audioSource.Play();
     }
 }

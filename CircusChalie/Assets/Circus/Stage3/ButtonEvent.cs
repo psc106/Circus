@@ -24,9 +24,9 @@ public class ButtonEvent : MonoBehaviour
             newBest.enabled = true;
         }   
         
-        record.text = $"Best score  : {bestRecord:D6}";
+        record.text = $"Best score  : {bestRecord:6}";
         
-        scroe.text = $"Final score : {GameManager.instance.score}";
+        scroe.text = $"Final score : {GameManager.instance.score:6}";
     }
 
 
