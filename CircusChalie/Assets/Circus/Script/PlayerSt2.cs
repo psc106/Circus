@@ -9,7 +9,6 @@ public class PlayerSt2 : MonoBehaviour
     public float speed = default;
     public float jumpPower = default;
 
-    public int life = default;
     public int direction = default;
     private int tmpScore = 0;
 
@@ -123,8 +122,9 @@ public class PlayerSt2 : MonoBehaviour
         rb.velocity = Vector2.zero;
         tmpScore = 0;
 
-        if (life == 0)
+        if (GameManager.instance.life == 0)
         {
+
             GameManager.instance.OnPlayerDead();
         }
         else
@@ -145,8 +145,6 @@ public class PlayerSt2 : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        GlobalFunction.Log(collision.ToString());
-        GlobalFunction.Log(collision.tag);
 
         if (collision.tag == "Score")
         {
@@ -167,7 +165,7 @@ public class PlayerSt2 : MonoBehaviour
             }
         }
         
-        if (collision.tag == "Head")
+        if (isLive && isJump && collision.tag == "Head")
         {
             RemoveObject tmp = collision.GetComponentInParent<RemoveObject>();
             if (tmp.isActive)
@@ -183,7 +181,7 @@ public class PlayerSt2 : MonoBehaviour
             }
         }
 
-        if (collision.tag == "Trap")
+        if (isLive && collision.tag == "Trap")
         {
             RemoveObject tmp = collision.GetComponentInParent<RemoveObject>();
             if (tmp.isActive)
@@ -238,24 +236,41 @@ public class PlayerSt2 : MonoBehaviour
 
     IEnumerator Clear(float x)
     {
-        if(transform.position.x - x < 0)
+        int direction = 0;
+        if (transform.position.x - x < 0)
         {
+            direction = 1;
             animator.SetBool("BackMove", true);
         }
-        else if(transform.position.x - x > 0)
+        else if (transform.position.x - x > 0)
         {
+            direction = -1;
             animator.SetBool("Move", true);
         }
 
-        float count = 0;
-        Vector2 curr = transform.position;
-        Vector2 end = new Vector2(x, transform.position.y);
+        float currX = transform.position.x;
 
-        while (count!=1)
+        while (currX == x)
         {
-            count += .2f;
-            transform.position = Vector2.Lerp(curr, end, count);
-            yield return 1f;
+            if (direction == 1)
+            {
+                currX += .2f;
+                transform.position = new Vector2(currX, transform.position.y);
+            }
+            else if (direction == -1)
+            {
+                currX -= .2f;
+                transform.position = new Vector2(currX, transform.position.y);
+            }
+            else
+            {
+                transform.position = new Vector2(currX, transform.position.y);
+            }
+            if (Mathf.Abs(currX - x) < .2f)
+            {
+                currX = x;
+            }
+            yield return new WaitForSeconds(.05f);
         }
 
         Win();

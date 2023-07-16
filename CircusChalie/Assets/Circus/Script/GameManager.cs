@@ -34,22 +34,23 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+
+            score = 0;
+            record = 20000;
+            bonus = 5000;
+
+            int bestRecord = PlayerPrefs.GetInt("BestScore");
+            if (record < bestRecord)
+            {
+                record = bestRecord;
+            }
         }
         else
         {
             GlobalFunction.Log("게임 매니저 2개 생겨서 종료");
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
 
-        score = 0;
-        record = 20000;
-        bonus = 5000;
-
-        int bestRecord = PlayerPrefs.GetInt("BestScore");
-        if (record < bestRecord)
-        {
-            record = bestRecord;
-        }
 
     }
     private void Update()
@@ -115,12 +116,12 @@ public class GameManager : MonoBehaviour
 
     public void OnStagedFail(Player player)
     {
-        StartCoroutine(PlayRestart(player));
+        StartCoroutine(PlayStage1Restart(player));
     }
 
     public void OnStagedFail(PlayerSt2 player)
     {
-        StartCoroutine(PlayRestart(player));
+        StartCoroutine(PlayStage2Restart(player));
     }
 
 
@@ -177,7 +178,7 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene($"Stage{stage:D2}");
     }
 
-    IEnumerator PlayRestart(Player player)
+    IEnumerator PlayStage1Restart(Player player)
     {
         isLoading = true;
         yield return new WaitForSeconds(1f);
@@ -202,12 +203,14 @@ public class GameManager : MonoBehaviour
         sceneUI.gameoverUI.SetActive(false);
     }
 
-    IEnumerator PlayRestart(PlayerSt2 player)
+    IEnumerator PlayStage2Restart(PlayerSt2 player)
     {
         isLoading = true;
         yield return new WaitForSeconds(1f);
+
         PlayLoading(2);
         yield return new WaitForSeconds(.5f);
+        
         life -= 1;
         sceneUI.Lifes[life].enabled = false;
 

@@ -165,7 +165,6 @@ public class Player : MonoBehaviour
             animator[1].SetBool("Jump", false);
             if (isLive)
             {
-                GlobalFunction.Log(collision.ToString());
                 Die();
             }
         }
@@ -242,26 +241,43 @@ public class Player : MonoBehaviour
 
     IEnumerator Clear(float x)
     {
+        int direction = 0 ;
         if(transform.position.x - x < 0)
         {
+            direction = 1;
             animator[0].SetBool("BackMove", true);
             animator[1].SetBool("BackMove", true);
         }
         else if(transform.position.x - x > 0)
         {
+            direction = -1;
             animator[0].SetBool("Move", true);
             animator[1].SetBool("Move", true);
         }
 
-        float count = 0;
-        Vector2 curr = transform.position;
-        Vector2 end = new Vector2(x, transform.position.y);
-
-        while (count!=1)
+        float currX = transform.position.x;
+        
+        while (currX != x)
         {
-            count += .2f;
-            transform.position = Vector2.Lerp(curr, end, count);
-            yield return .5f;
+            if (direction == 1)
+            {
+                currX += .2f;
+                transform.position = new Vector2(currX, transform.position.y);
+            }
+            else if (direction == -1)
+            {
+                currX -= .2f;
+                transform.position = new Vector2(currX, transform.position.y);
+            }
+            else
+            {
+                transform.position = new Vector2(currX, transform.position.y);
+            }
+            if (Mathf.Abs(currX - x) < .2f)
+            {
+                currX = x;
+            }
+            yield return new WaitForSeconds(.1f);
         }
 
         Win();

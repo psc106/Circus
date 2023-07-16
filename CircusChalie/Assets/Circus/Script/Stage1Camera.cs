@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Stage1Camera : MonoBehaviour
 {
+    private bool isStop = false;
+    private Vector3 stopPosition;
 
     void Update()
     {
@@ -15,10 +17,24 @@ public class Stage1Camera : MonoBehaviour
         }
         else
         {
+            if (transform.parent.GetComponent<Player>().isInvicible)
+            {
+                if (isStop)
+                {
+                    transform.position = stopPosition;
+                }
+                else
+                {
+                    isStop = true;
+                    stopPosition = transform.position;
+                }
+            }
+
             if (transform.parent.transform.position.x < 150)
             {
                 transform.position = new Vector3(transform.position.x, 0f, -20);
             }
+
             else
             {
                 transform.position = new Vector3(160, 0f, -20);

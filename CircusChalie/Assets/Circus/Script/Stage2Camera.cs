@@ -5,6 +5,9 @@ using UnityEngine;
 public class Stage2Camera : MonoBehaviour
 {
 
+    private bool isStop = false;
+    private Vector3 stopPosition;
+
     void Update()
     {
 
@@ -15,6 +18,19 @@ public class Stage2Camera : MonoBehaviour
         }
         else
         {
+            if (transform.parent.GetComponent<PlayerSt2>().isInvicible)
+            {
+                if (isStop)
+                {
+                    transform.position = stopPosition;
+                }
+                else
+                {
+                    isStop = true;
+                    stopPosition = transform.position;
+                }
+            }
+
             if (transform.parent.transform.position.x < 145)
             {
                 transform.position = new Vector3(transform.position.x, 1f, -20);
