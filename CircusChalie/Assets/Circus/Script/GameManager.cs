@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using TMPro;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
@@ -57,7 +56,6 @@ public class GameManager : MonoBehaviour
         else
         {
             GlobalFunction.Log("게임 매니저 2개 생겨서 종료");
-            instance.sceneUI = sceneUI;
             Destroy(gameObject);
         }
 
@@ -65,12 +63,14 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
+        GlobalFunction.Log(life);
+
         if (sceneUI == null)
         {
             sceneUI = FindAnyObjectByType<UI>();
         }
 
-        if ((stage == 1 || stage == 2) && sceneUI == null)
+        if ((stage == 1 || stage == 2) && sceneUI != null)
         {
             if (life == 3)
             {
@@ -144,6 +144,7 @@ public class GameManager : MonoBehaviour
 
         bonus = 0;
         sceneUI.WriteBonus();
+
 
         isStageClear = true;
         StartCoroutine(PlayClear());
@@ -220,6 +221,7 @@ public class GameManager : MonoBehaviour
         savePoint = 0;
         sceneUI = null;
         isStageClear = false;
+        isJoystickActivate = false;
         SceneManager.LoadScene($"Stage{stage:D2}");
     }
 

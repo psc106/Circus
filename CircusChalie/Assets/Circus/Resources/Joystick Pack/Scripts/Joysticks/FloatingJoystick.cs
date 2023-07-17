@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 using UnityEngine.Windows;
 
 public class FloatingJoystick : Joystick
